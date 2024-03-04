@@ -1,0 +1,30 @@
+<form hx-target="#event-data" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="CreateEventLabel" th:text="${event.id}? 'Edit Event' : 'Create Event'"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input autoFocus name="title" id="title" type="text" th:value="${event.title}"/>
+        </div>
+        <div class="mb-3">
+            <label for="dateTime" class="form-label">Date/Time</label>
+            <input autoFocus name="dateTime" id="dateTime" type="datetime-local" th:value="${event.dateTime}"/>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input autoFocus name="location" id="location" type="text" th:value="${event.location}"/>
+        </div>
+        <div class="mb-3">
+            <label for="guests" class="form-label">Guests</label>
+            <input autoFocus name="guests" id="guests" type="number" th:value="${event.guests}"/>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" hx-reset>Close</button>
+        <button th:if="${event.id == null}" type="submit" class="btn btn-primary" data-bs-dismiss="modal"  hx-post="/events" hx-ext="json-enc">Create</button>
+        <button th:if="${event.id}" type="submit" class="btn btn-primary" data-bs-dismiss="modal" th:hx-put="|/events/${event.id}|" hx-ext="json-enc" th:hx-target="'#id-'+${event.id}" hx-swap="outerHTML">Update</button>
+    </div>
+</form>
+
