@@ -1,19 +1,16 @@
 package com.practical.events;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practical.events.dtos.EventRequest;
 import com.practical.events.dtos.EventResponse;
 import com.practical.events.entities.Event;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -25,9 +22,11 @@ import static java.util.stream.Collectors.toList;
 public class EventController {
 
     private EventService eventService;
+    private final NotificationService notificationService;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, NotificationService notificationService) {
         this.eventService = eventService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/index")
@@ -38,6 +37,7 @@ public class EventController {
     @PostMapping("/events")
     public String createEvent(Model model, @Valid @RequestBody EventRequest eventRequest) {
         Event event = eventService.saveEvent(eventRequest.toEvent());
+        notificationService.sendEvents(SseEmitter.event().name("event").data("created"));
         model.addAttribute("events", List.of(event));
         return "table-body";
     }
@@ -58,6 +58,7 @@ public class EventController {
                 .map(existingEvent -> update(existingEvent, updateRequest))
                 .map(eventService::saveEvent)
                 .orElseThrow();
+        notificationService.sendEvents(SseEmitter.event().name("event").data("updated"));
         model.addAttribute("events", List.of(event));
         return "table-body";
     }
@@ -73,6 +74,7 @@ public class EventController {
     @DeleteMapping("/events/{id}")
     public ResponseEntity<?> deleteEvent(Model model, @PathVariable String id) {
         eventService.getEvent(id).ifPresent(eventService::deleteEvent);
+        notificationService.sendEvents(SseEmitter.event().name("event").data("deleted"));
         return ResponseEntity.ok().build();
     }
 

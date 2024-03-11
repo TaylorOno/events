@@ -2,8 +2,9 @@
 <html lang="en" xmlns:hx-on="http://www.w3.org/1999/xhtml" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
-    <script src="static/js/htmx.min.js"></script>
-    <script src="static/js/json-enc.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/sse.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
@@ -15,28 +16,31 @@
 
 <body>
 <div class="container" style="padding: 2em">
-    <button type="button" class="btn btn-primary" hx-get="/events/new" hx-target="#modal-content" hx-swap="innerHTML"
-            data-bs-toggle="modal" data-bs-target="#modal">New Event
-    </button>
-    <div class="modal fade" tabindex="-1" id="modal">
-        <div class="modal-dialog">
-            <div class="modal-content" id=modal-content>
+    <div hx-ext="sse" sse-connect="/sse">
+        <button type="button" class="btn btn-primary" hx-get="/events/new" hx-target="#modal-content"
+                hx-swap="innerHTML"
+                data-bs-toggle="modal" data-bs-target="#modal">New Event
+        </button>
+        <div class="modal fade" tabindex="-1" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content" id=modal-content>
+                </div>
             </div>
         </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Event</th>
+                <th scope="col">Date/Time</th>
+                <th scope="col">Location</th>
+                <th scope="col">Guests</th>
+                <th scope="col">Update</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody id=event-data hx-get="/events" hx-trigger="load, sse:event" class="MuiTableBody-root"/>
+        </table>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Event</th>
-            <th scope="col">Date/Time</th>
-            <th scope="col">Location</th>
-            <th scope="col">Guests</th>
-            <th scope="col">Update</th>
-            <th scope="col">Delete</th>
-        </tr>
-        </thead>
-        <tbody id=event-data hx-get="/events" hx-trigger="load, every 30s" class="MuiTableBody-root"/>
-    </table>
 </div>
 </body>
 </html>
