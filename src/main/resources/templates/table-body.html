@@ -1,5 +1,4 @@
-<tr th:id="'id-'+${event.id}" th:each="event: ${events}" class="MuiTableRow-root">
-    <form th:hx-put="|/events/${event.id}|" hx-ext="json-enc">
+<tr th:id="'id-'+${event.id}" th:each="event: ${events}">
         <td>
             <span th:text="${event.title}"></span>
         </td>
@@ -13,10 +12,9 @@
             <span th:text="${event.guests}"></span>
         </td>
         <td>
-            <button type="button" class="btn btn-outline-primary" th:hx-get="|/events/${event.id}|" hx-target="#modal-content" hx-swap="innerHTML" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
+            <button class="outline" th:hx-get="|/events/${event.id}|" hx-target="#modal-content" hx-swap="innerHTML" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>
         </td>
         <td>
-            <button type="button" class="btn btn-danger" th:hx-delete="|/events/${event.id}|" th:hx-target="'#id-'+${event.id}" hx-swap="outerHTML">Delete</button>
+            <button class="secondary" th:hx-delete="|/events/${event.id}|" th:hx-target="'#id-'+${event.id}" hx-swap="outerHTML">Delete</button>
         </td>
-    </form>
 </tr>
