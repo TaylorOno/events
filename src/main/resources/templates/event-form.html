@@ -1,37 +1,28 @@
 <dialog open>
     <article>
-        <form method="dialog" hx-target="#event-data" hx-swap="beforeend" hx-on::after-request="this.reset()">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="CreateEventLabel"
-                    th:text="${event.id}? 'Edit Event' : 'Create Event'"></h1>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
+        <form method="dialog" hx-on::after-request="this.reset()">
+        <header>
+            <button aria-label="Close" rel="prev"></button>
+            <h1 id="CreateEventLabel" th:text="${event.id}? 'Edit Event' : 'Create Event'"></h1>
+        </header>
+            <fieldset>
+                <label>Title
                     <input autoFocus name="title" id="title" type="text" th:value="${event.title}"/>
-                </div>
-                <div class="mb-3">
-                    <label for="dateTime" class="form-label">Date/Time</label>
+                </label>
+                <label>Date/Time
                     <input autoFocus name="dateTime" id="dateTime" type="datetime-local" th:value="${event.dateTime}"/>
-                </div>
-                <div class="mb-3">
-                    <label for="location" class="form-label">Location</label>
+                </label>
+                <label>Location
                     <input autoFocus name="location" id="location" type="text" th:value="${event.location}"/>
-                </div>
-                <div class="mb-3">
-                    <label for="guests" class="form-label">Guests</label>
+                </label>
+                <label>Guests
                     <input autoFocus name="guests" id="guests" type="number" th:value="${event.guests}"/>
-                </div>
-            </div>
-            <footer role="grid">
-                <button type="button" class="secondary" data-bs-dismiss="modal" hx-reset onclick="close()">Close</button>
-                <button type="submit" data-bs-dismiss="modal" th:if="${event.id == null}"
-                        hx-post="/events" hx-ext="json-enc">Create
-                </button>
-                <button type="submit" data-bs-dismiss="modal" th:if="${event.id}"
-                        th:hx-put="|/events/${event.id}|" hx-ext="json-enc" th:hx-target="'#id-'+${event.id}"
-                        hx-swap="outerHTML">Update
-                </button>
+                </label>
+            </fieldset>
+            <footer>
+                <button class="secondary" hx-reset>Close</button>
+                <button autoFocus class="primary" th:if="${event.id == null}" hx-post="/events" hx-ext="json-enc" hx-target="#modal-content" hx-swap="innerHTML">Create</button>
+                <button autoFocus class="primary" th:if="${event.id}" th:hx-put="|/events/${event.id}|" hx-ext="json-enc" hx-target="#modal-content" hx-swap="innerHTML">Update</button>
             </footer>
         </form>
     </article>

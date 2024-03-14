@@ -39,7 +39,7 @@ public class EventController {
         Event event = eventService.saveEvent(eventRequest.toEvent());
         notificationService.sendEvents(SseEmitter.event().name("event").data("created"));
         model.addAttribute("events", List.of(event));
-        return "table-body";
+        return "success";
     }
 
     @GetMapping("/events/{id}")
@@ -59,8 +59,7 @@ public class EventController {
                 .map(eventService::saveEvent)
                 .orElseThrow();
         notificationService.sendEvents(SseEmitter.event().name("event").data("updated"));
-        model.addAttribute("events", List.of(event));
-        return "table-body";
+        return "success";
     }
 
     private Event update(Event event, EventRequest updateRequest) {
